@@ -16,7 +16,7 @@ int main(){
 	}
 	else
 	{
-		return 0;
+		r = n2 - n1;
 	}
 	cout << "El resultado: " << r << endl;
 	return 0;
