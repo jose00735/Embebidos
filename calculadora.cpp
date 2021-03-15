@@ -5,7 +5,7 @@ using namespace std;
 int main(){
 	int r = 0,n1 = 0, n2 = 0;
 	int op = 0;
-	cout << "Ingrese a operacion deseada:" << endl << "1) suma" << endl << "2) Resta" << endl << ": ";
+	cout << "Ingrese a operacion deseada:" << endl << "1) suma" << endl << "2) Resta" << endl << "3) multiplicacion "<<": ";
 	cin >> op;
  	cout << "Ingrese n1: ";
 	cin >> n1;
@@ -14,9 +14,12 @@ int main(){
 	if (op == 1){
 		r = n2 + n1;		
 	}
-	else
+	else if(op == 2)
 	{
 		r = n2 - n1;
+	}
+	else{
+		r = n2*n1;
 	}
 	cout << "El resultado: " << r << endl;
 	return 0;
