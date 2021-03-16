@@ -26,5 +26,6 @@ int main(){
 		r = n2/n1;
 	}
 	cout << "El resultado: " << r << endl;
+	printf("\n\rChao");
 	return 0;
 }
