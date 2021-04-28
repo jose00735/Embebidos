@@ -13,7 +13,8 @@ int main(){
 
     int connection = 0;
     int socket_id = 0;
-    long int aux[6] = {0};
+    long int data[6] = {0};
+    int stratum = 0;
     unsigned char msg[48]={0x1B,0,0,0,0,0,0,0,0,0};
     unsigned char buffer[50]={0};
 
@@ -44,8 +45,7 @@ int main(){
     printf("[+] Data send\r\n");
 
     // los penultimos 32 bits  contienen los segundos 
-    // de la marca de tiempo cuando el paquete salió del servidor NTP.
-    // El número de segundos corresponde a los segundos transcurridos desde 1900.
+    // El número de segundos corresponde a los segundos transcurridos desde 1970.
     
     recv(socket_id,buffer,sizeof(buffer),0);
     printf("[+] Data receive\r\n");
@@ -54,27 +54,39 @@ int main(){
     // convirtiendo las cadenas de 8 bytes a una de 32 bytes para formar el numero correspondiente
     // a los segundos
     
-    aux[1] = buffer[43]<<24;
-    aux[2] = buffer[42]<<16;
-    aux[3] = buffer[41]<<8;
-    aux[4] = aux[1]+ aux[2] + aux[3] + buffer[40];
-    
+    data[1] = buffer[43]<<24;
+    data[2] = buffer[42]<<16;
+    data[3] = buffer[41]<<8;
+    data[4] = data[1]+ data[2] + data[3] + data[40];
 
-    aux[5]= ntohl( aux[4] );
+    data[5]= ntohl( data[4] );
+
     // convierte una cadena de formato de orden de byte de la red al 
     // orden de bytes del host
     
+    data[5] = data[5] - Seventy_years; // le restamos los 70 años a la fecha     
+
+    // se captura la informacion correspondiente al stratum para saber que tan confiable es esta fecha
     
-    aux[5] = aux[5] - Seventy_years; // le restamos los 70 años a la fecha     
-  
-    
+    stratum = buffer[2];
+          
     //La función ctime (const time_t * timer) 
     //devuelve una cadena que representa el tiempo basado en el argumento timer.
     //La cadena devuelta tiene el siguiente formato: 
     //día de la semana, mes, día del mes, hh: mm: ss la hora y el año.
     
-    printf("======== FECHA =========\n\r%s", ctime(&aux[5]));
+    printf("======== FECHA =========\n\r%s", ctime(&data[5]));
     printf("========================\n\r");
+    printf("======== Stratum ========\n\r");
+    printf("%d\n\r",stratum);
+    printf("========================\n\r");
+    if(stratum > 15){
+      printf("Fecha desincronizada");   
+    }	     
+    else 
+    {
+      printf("fecha sincronizada");
+    }
     close(socket_id);
     return (0);
 
